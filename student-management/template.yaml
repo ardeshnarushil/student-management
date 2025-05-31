@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Student Management API
+
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: python3.12
+    MemorySize: 128
+    Architectures: [x86_64]
+
+Resources:
+  CreateStudentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: students/create_student.create_student_handler
+      Events:
+        PostStudent:
+          Type: Api
+          Properties:
+            Path: /students
+            Method: post
+
+  GetStudentsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: students/get_students.get_students_handler
+      Events:
+        GetStudents:
+          Type: Api
+          Properties:
+            Path: /students
+            Method: get
+
+  GetStudentByIdFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: students/get_student_by_id.get_student_by_id_handler
+      Events:
+        GetStudentById:
+          Type: Api
+          Properties:
+            Path: /students/{student_id}
+            Method: get
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "http://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
